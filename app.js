@@ -20,6 +20,7 @@ app.use(express.json());
 // Define routes
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
+const cycleRoutes = require('./routes/cycleRoutes');
 
 console.log('JWT secret key is', process.env.JWT_SECRET);
 
