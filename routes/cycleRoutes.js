@@ -1,12 +1,9 @@
+// routes/cycleRoutes.js
 const express = require('express');
-const { getNearbyStations, getAvailableCycles } = require('../controllers/cycleController');
-const authMiddleware = require('./middleware/authMiddleware'); // Middleware to protect routes
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const { getAvailableCycles } = require('../controllers/cycleController');
 
-// Get nearby rental stations based on user location (latitude and longitude)
-router.get('/nearby', authMiddleware, getNearbyStations);
-
-// Get available cycles at a specific rental station
-router.get('/available/:stationId', authMiddleware, getAvailableCycles);
+router.get('/available', authMiddleware, getAvailableCycles);
 
 module.exports = router;

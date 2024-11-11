@@ -1,7 +1,8 @@
+// middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
+const User = require('../models/User');
 
-const authMiddleware = (req, res, next) => {
-  // Get token from the Authorization header
+const authMiddleware = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -11,9 +12,8 @@ const authMiddleware = (req, res, next) => {
   const token = authHeader.split(' ')[1];
 
   try {
-    // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded; // Attach the decoded token (usually contains user info) to req.user
+    req.user = await User.findById(decoded.id); // Retrieve user from MongoDB
     next();
   } catch (error) {
     res.status(401).json({ message: 'Token is not valid' });

@@ -1,18 +1,13 @@
-const { DataTypes } = require('sequelize');
-const { sequelize } = require('../config/db');
-const RentalStation = require('/RentalStation');
+// models/Cycle.js
+const mongoose = require('mongoose');
 
-const Cycle = sequelize.define('Cycle', {
-  model: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  status: {
-    type: DataTypes.STRING,
-    defaultValue: 'available',
-  },
+const cycleSchema = new mongoose.Schema({
+  stationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Station' },
+  cycleType: { type: String },
+  status: { type: String, enum: ['Available', 'Rented', 'Maintenance'] },
+  pricePerHour: { type: Number },
+  createdAt: { type: Date, default: Date.now },
+  updatedAt: { type: Date, default: Date.now },
 });
 
-Cycle.belongsTo(RentalStation, { foreignKey: 'rentalStationId' });
-
-module.exports = Cycle;
+module.exports = mongoose.model('Cycle', cycleSchema);
