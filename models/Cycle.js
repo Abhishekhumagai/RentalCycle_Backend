@@ -9,7 +9,8 @@ const cycleSchema = new mongoose.Schema({
   price_per_hour: { type: Number, required: true },
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
-  image: { type: String}
+  image: { type: String},
+  description:{type:String}
 });
 
 module.exports = mongoose.model('Cycle', cycleSchema);
