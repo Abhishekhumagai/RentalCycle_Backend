@@ -2,10 +2,11 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
-const { addToCart } = require('../controllers/cartController');
+const { addToCart, viewCart, removeFromCart } = require('../controllers/cartController');  // Correct import
 
-router.post('/add', authMiddleware, cartController.addToCart);
-router.get('/view', authMiddleware, cartController.viewCart);
-router.delete('/remove', authMiddleware, cartController.removeFromCart);
+// Use the correct function names
+router.post('/add', addToCart);       // Create a cycle
+router.get('/view', viewCart);        // View cart
+router.delete('/remove', removeFromCart);  // Remove an item from cart
 
 module.exports = router;
