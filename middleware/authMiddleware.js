@@ -1,22 +1,20 @@
 // middleware/authMiddleware.js
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
 
-const authMiddleware = async (req, res, next) => {
-  const authHeader = req.headers.authorization;
+const authMiddleware = (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1]; // Get token from Authorization header
 
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ message: 'No token provided, authorization denied' });
+  if (!token) {
+    return res.status(401).json({ error: 'No token provided, authorization denied' });
   }
 
-  const token = authHeader.split(' ')[1];
-
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = await User.findById(decoded.id); // Retrieve user from MongoDB
-    next();
+    const decoded = jwt.verify(token, process.env.JWT_SECRET); // Verify the token
+    req.user = decoded.user; // Attach the user info to the request object
+    next(); // Call the next middleware (controller)
   } catch (error) {
-    res.status(401).json({ message: 'Token is not valid' });
+    console.error(error);
+    res.status(401).json({ error: 'Token is not valid' });
   }
 };
 
