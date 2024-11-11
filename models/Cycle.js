@@ -2,12 +2,11 @@
 const mongoose = require('mongoose');
 
 const cycleSchema = new mongoose.Schema({
-  stationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Station' },
-  cycleType: { type: String },
-  status: { type: String, enum: ['Available', 'Rented', 'Maintenance'] },
-  pricePerHour: { type: Number },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
+  cycle_type: { type: String, required: true },
+  status: { type: String, enum: ['Available', 'Rented', 'Maintenance'], default: 'Available' },
+  price_per_hour: { type: Number, required: true },
+  created_at: { type: Date, default: Date.now },
+  updated_at: { type: Date, default: Date.now }
 });
 
 module.exports = mongoose.model('Cycle', cycleSchema);

@@ -30,69 +30,70 @@ const Station = require('../models/Station');
 
 exports.getAvailableCycles = async (req, res) => {
   try {
-    const availableCycles = await Cycle.find({ status: 'Available' }).populate('stationId');
+    const availableCycles = await Cycle.find({ status: 'Available' });
     res.json(availableCycles);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-exports.addCycle = async (req, res) => {
-  try { 
-    const { status, stationId, cycleType, model, otherProperties } = req.body; 
-    if (!status || !stationId || !cycleType || !model) {
-      return res.status(400).json({ error: 'Missing required fields: status, stationId, cycleType, and model' });
-    }
-    const newCycle = new Cycle({
-      status,           
-      stationId,        
-      cycleType,        
-      model,            
-      otherProperties,  
-    });
-    await newCycle.save();
-    const savedCycle = await Cycle.findById(newCycle._id).populate('stationId');
-    res.status(201).json({ message: 'Cycle added successfully', cycle: savedCycle });
+exports.createCycle = async (req, res) => {
+  try {
+    const { cycle_type, status, price_per_hour } = req.body;
+    const newCycle = new Cycle({ cycle_type, status, price_per_hour });
+    const savedCycle = await newCycle.save();
+    res.status(201).json(savedCycle);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-exports.deletCycle = async (req, res) => {
+// Get all cycles
+exports.getAllCycles = async (req, res) => {
   try {
-    const { cycleId } = req.params; 
-    const deletedCycle = await Cycle.findByIdAndDelete(cycleId);
-    if (!deletedCycle) {
-      return res.status(404).json({ error: 'Cycle not found' });
-    }
-    res.status(200).json({ message: 'Cycle deleted successfully' });
+    const cycles = await Cycle.find();
+    res.status(200).json(cycles);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
+
+// Get a single cycle by ID
+exports.getCycleById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const cycle = await Cycle.findById(id);
+    if (!cycle) return res.status(404).json({ message: 'Cycle not found' });
+    res.status(200).json(cycle);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Update a cycle by ID
 exports.updateCycle = async (req, res) => {
   try {
-    const { cycleId } = req.params; 
-    const { status, stationId, cycleType, model, otherProperties } = req.body;
-    if (!status && !stationId && !cycleType && !model && !otherProperties) {
-      return res.status(400).json({ error: 'No fields to update. Please provide at least one field.' });
-    }
+    const { id } = req.params;
+    const { cycle_type, status, price_per_hour } = req.body;
     const updatedCycle = await Cycle.findByIdAndUpdate(
-      cycleId, 
-      {
-        status,           
-        stationId,        
-        cycleType,        
-        model,            
-        otherProperties,  
-      },
-      { new: true } 
-    ).populate(' stationId'); 
+      id,
+      { cycle_type, status, price_per_hour, updated_at: Date.now() },
+      { new: true }
+    );
+    if (!updatedCycle) return res.status(404).json({ message: 'Cycle not found' });
+    res.status(200).json(updatedCycle);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
-    if (!updatedCycle) {
-      return res.status(404).json({ error: 'Cycle not found' });
-    }
-    res.status(200).json({ message: 'Cycle updated successfully', cycle: updatedCycle });
+// Delete a cycle by ID
+exports.deleteCycle = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedCycle = await Cycle.findByIdAndDelete(id);
+    if (!deletedCycle) return res.status(404).json({ message: 'Cycle not found' });
+    res.status(200).json({ message: 'Cycle deleted successfully' });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

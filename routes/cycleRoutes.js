@@ -1,12 +1,13 @@
 // routes/cycleRoutes.js
 const express = require('express');
 const router = express.Router();
-const authMiddleware = require('../middleware/authMiddleware');
-const { getAvailableCycles, addCycle ,deletCycle,updateCycle} = require('../controllers/cycleController');
+const cycleController = require('../controllers/cycleController'); // Ensure the path is correct
 
-router.get('/available', getAvailableCycles);
-router.post('/addcycle',addCycle);
-router.post('/deleteCycle',deletCycle);
-router.get('/updateCycle',updateCycle);
+// CRUD routes for cycles
+router.post('/addcycle', cycleController.createCycle);       // Create a cycle
+router.get('/', cycleController.getAllCycles);               // Get all cycles
+router.get('/:id', cycleController.getCycleById);            // Get a single cycle by ID
+router.put('/:id', cycleController.updateCycle);             // Update a cycle by ID
+router.delete('/:id', cycleController.deleteCycle);          // Delete a cycle by ID
 
 module.exports = router;
