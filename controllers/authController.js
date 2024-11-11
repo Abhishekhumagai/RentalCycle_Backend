@@ -4,7 +4,7 @@ const  User  = require('../models/User');  // Import User model
 
 // Register a new user
 exports.register = async (req, res) => {
-  const { name, email, password , phoneNumber, dob, gender,address} = req.body;
+  const { username, email, password , phoneNumber, dob, gender,address} = req.body;
 
   try {
     // Check if the user already exists
@@ -15,7 +15,7 @@ exports.register = async (req, res) => {
 
     // Hash the password and create a new user
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ name, email, password: hashedPassword,phoneNumber,dob,gender,address });
+    const newUser = await User.create({ username, email, password: hashedPassword,phoneNumber,dob,gender,address });
 
     res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
   } catch (error) {
@@ -24,25 +24,53 @@ exports.register = async (req, res) => {
 };
 
 // Login user and return a JWT token
+// exports.login = async (req, res) => {
+//   const { email, password } = req.body;
+//   try {
+//     // Check if the user exists
+//     const user = await User.findOne({ where: { email } });
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+
+//     // Check password
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) {
+//       return res.status(401).json({ message: 'Invalid credentials' });
+//     }
+//     console.log(user)
+//     // Generate a JWT token
+//     const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+//     res.json({ message: 'Login successful', token });
+//   } catch (error) {
+//     res.status(500).json({ error: error.message });
+//   }
+// };
 exports.login = async (req, res) => {
-  const { email, password } = req.body;
   try {
-    // Check if the user exists
-    const user = await User.findOne({ where: { email } });
+    const { email, password } = req.body;
+
+    // Find user by email
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    // Check password
+    // Compare provided password with the stored hashed password
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.status(400).json({ message: 'Invalid credentials' });
     }
-    console.log(user)
-    // Generate a JWT token
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
 
-    res.json({ message: 'Login successful', token });
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
+
+    res.json({ token, user: { email: user.email, username: user.username } });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
