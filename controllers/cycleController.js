@@ -39,8 +39,8 @@ exports.getAvailableCycles = async (req, res) => {
 
 exports.createCycle = async (req, res) => {
   try {
-    const { cycle_type, status, price_per_hour } = req.body;
-    const newCycle = new Cycle({ cycle_type, status, price_per_hour });
+    const { image,name,color,cycle_type, status, price_per_hour,description } = req.body;
+    const newCycle = new Cycle({ image,name,color,cycle_type, status, price_per_hour,description });
     const savedCycle = await newCycle.save();
     res.status(201).json(savedCycle);
   } catch (error) {
@@ -74,10 +74,10 @@ exports.getCycleById = async (req, res) => {
 exports.updateCycle = async (req, res) => {
   try {
     const { id } = req.params;
-    const { cycle_type, status, price_per_hour } = req.body;
+    const { image,name,color,description,cycle_type, status, price_per_hour } = req.body;
     const updatedCycle = await Cycle.findByIdAndUpdate(
       id,
-      { cycle_type, status, price_per_hour, updated_at: Date.now() },
+      { image,name,color,description,cycle_type, status, price_per_hour, updated_at: Date.now() },
       { new: true }
     );
     if (!updatedCycle) return res.status(404).json({ message: 'Cycle not found' });
