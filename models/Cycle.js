@@ -10,7 +10,9 @@ const cycleSchema = new mongoose.Schema({
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date, default: Date.now },
   image: { type: String},
-  description:{type:String}
+  description:{type:String},
+  latitude:{type:String},
+  longitude:{type:String}
 });
 
 module.exports = mongoose.model('Cycle', cycleSchema);
