@@ -1,13 +1,14 @@
 // routes/cycleRoutes.js
 const express = require('express');
 const router = express.Router();
-const cycleController = require('../controllers/cycleController'); // Ensure the path is correct
+const cycleController = require('../controllers/cycleController');
+const verifyAdmin = require('../middleware/roleMiddleware'); 
 
 // CRUD routes for cycles
-router.post('/addcycle', cycleController.createCycle);       // Create a cycle
-router.get('/', cycleController.getAllCycles);               // Get all cycles
-router.get('/:id', cycleController.getCycleById);            // Get a single cycle by ID
-router.put('/:id', cycleController.updateCycle);             // Update a cycle by ID
-router.delete('/:id', cycleController.deleteCycle);          // Delete a cycle by ID
+router.post('/addcycle', verifyAdmin, cycleController.createCycle);     //Admin only
+router.get('/', cycleController.getAllCycles);                           
+router.get('/:id', cycleController.getCycleById);                       
+router.put('/:id', verifyAdmin, cycleController.updateCycle);         //  Admin only
+router.delete('/:id', verifyAdmin, cycleController.deleteCycle);          // Admin only
 
 module.exports = router;
