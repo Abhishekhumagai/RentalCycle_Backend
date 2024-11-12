@@ -2,6 +2,7 @@
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
+
 const { addToCart, viewCart, removeFromCart } = require('../controllers/cartController');  // Correct import
 
 // Use the correct function names
