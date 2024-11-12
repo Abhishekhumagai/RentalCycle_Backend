@@ -12,7 +12,8 @@ const cycleSchema = new mongoose.Schema({
   image: { type: String},
   description:{type:String},
   latitude:{type:String},
-  longitude:{type:String}
+  longitude:{type:String},
+  location:{type:String}
 });
 
 module.exports = mongoose.model('Cycle', cycleSchema);
