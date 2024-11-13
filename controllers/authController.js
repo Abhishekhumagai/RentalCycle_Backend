@@ -23,7 +23,7 @@ const  User  = require('../models/User');  // Import User model
 // };
 // Register a new user
 exports.register = async (req, res) => {
-  const { username, email, password , phoneNumber, dob, gender,address} = req.body;
+  const { username, email, password , phoneNumber, dob, gender,address,role} = req.body;
 
   try {
 
@@ -33,7 +33,7 @@ exports.register = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = await User.create({ username, email, password: hashedPassword,phoneNumber,dob,gender,address });
+    const newUser = await User.create({ username, email, password: hashedPassword,phoneNumber,dob,gender,address,role:role||"user"});
 
     res.status(201).json({ message: 'User registered successfully', userId: newUser.id });
   } catch (error) {
@@ -64,7 +64,7 @@ exports.login = async (req, res) => {
       { expiresIn: '1h' }
     );
 
-    res.json({ token, user: { email: user.email, username: user.username } });
+    res.json({ token, user: { email: user.email, username: user.username ,role:user.role} });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

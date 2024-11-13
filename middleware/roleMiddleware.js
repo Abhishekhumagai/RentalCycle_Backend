@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 const verifyAdmin = async (req, res, next) => {
   try {
-    const user = await User.findById(req.user._id); // Assumes req.user is populated by authentication middleware
+    const user = await User.findById(req.user.userId); // Assumes req.user is populated by authentication middleware
     if (user && user.role === 'admin') {
       next();
     } else {
