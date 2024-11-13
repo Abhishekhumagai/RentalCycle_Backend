@@ -13,3 +13,5 @@ router.put('/:id',authMiddleware, verifyAdmin, cycleController.updateCycle);    
 router.delete('/:id',authMiddleware, verifyAdmin, cycleController.deleteCycle);          // Admin only
 router.put('/rent/:id', authMiddleware, cycleController.rentCycle);
 module.exports = router;
+
+//cla
