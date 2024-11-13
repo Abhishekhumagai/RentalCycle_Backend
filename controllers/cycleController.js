@@ -98,27 +98,60 @@ exports.deleteCycle = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+// exports.rentCycle = async (req, res) => {
+//   try {
+//     const { id } = req.params; // Cycle ID from the request params
+
+//     // Find the cycle by ID and ensure it's available
+//     const cycle = await Cycle.findById(id);
+//     if (!cycle) {
+//       return res.status(404).json({ error: 'Cycle not found' });
+//     }
+
+//     if (cycle.status !== 'Available') {
+//       return res.status(400).json({ error: 'Cycle is not available for rent' });
+//     }
+
+//     // Update the cycle status to "Rented"
+//     cycle.status = 'Rented';
+//     await cycle.save();
+
+//     res.status(200).json({ message: 'Cycle rented successfully', cycle });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Something went wrong' });
+//   }
+// };
 exports.rentCycle = async (req, res) => {
   try {
-    const { id } = req.params; // Cycle ID from the request params
+    const cycleId = req.params.cycle_id;
+    const userId = req.user._id; // Get the user ID from the token
 
-    // Find the cycle by ID and ensure it's available
-    const cycle = await Cycle.findById(id);
-    if (!cycle) {
-      return res.status(404).json({ error: 'Cycle not found' });
+    // Find and update the cycle status to "Rented"
+    const cycle = await Cycle.findById(cycleId);
+    if (!cycle || cycle.status !== 'Available') {
+      return res.status(400).json({ error: 'Cycle not available for rent' });
     }
 
-    if (cycle.status !== 'Available') {
-      return res.status(400).json({ error: 'Cycle is not available for rent' });
-    }
-
-    // Update the cycle status to "Rented"
     cycle.status = 'Rented';
     await cycle.save();
 
-    res.status(200).json({ message: 'Cycle rented successfully', cycle });
+    // Create a pending payment record
+    const payment = new Payment({
+      user_id: userId,
+      cycle_id: cycle._id,
+      amount: cycle.price_per_hour,  // Or adjust this calculation as needed
+      status: 'Pending'
+    });
+    await payment.save();
+
+    res.status(200).json({
+      message: 'Cycle rented successfully. Payment pending.',
+      cycle,
+      payment
+    });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Something went wrong' });
+    res.status(500).json({ error: 'An error occurred' });
   }
 };

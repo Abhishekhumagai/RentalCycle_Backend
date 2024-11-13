@@ -6,6 +6,7 @@ const connectDB = require('./config/db');  // Adjusted for MongoDB connection
 const authRoutes = require('./routes/authRoutes');
 const cartRoutes = require('./routes/cartRoutes');
 const cycleRoutes = require('./routes/cycleRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 
 // Connect to MongoDB
@@ -23,6 +24,7 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/cart', cartRoutes);
 app.use('/api/cycles', cycleRoutes);
+app.use('/api/payments', paymentRoutes);
 
 console.log('JWT secret key is', process.env.JWT_SECRET);
 

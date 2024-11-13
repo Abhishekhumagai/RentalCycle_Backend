@@ -1,10 +1,8 @@
 const express = require('express');
-const { processPayment } = require('../controllers/paymentController');
-const authMiddleware = require('./middleware/authMiddleware'); // Middleware to protect routes
 const router = express.Router();
+const authMiddleware = require('../middleware/authMiddleware');
+const paymentController = require('../controllers/paymentController');
 
-// Route to initiate payment using Khalti
-router.post('/', authMiddleware, processPayment);
-router.post('/payment',payment );
+router.put('/complete/:payment_id', authMiddleware, paymentController.completePayment);
 
 module.exports = router;
