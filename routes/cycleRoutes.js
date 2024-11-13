@@ -14,4 +14,3 @@ router.delete('/:id',authMiddleware, verifyAdmin, cycleController.deleteCycle); 
 router.put('/rent/:id', authMiddleware, cycleController.rentCycle);
 module.exports = router;
 
-//cla
