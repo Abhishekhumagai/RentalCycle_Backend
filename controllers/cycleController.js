@@ -98,3 +98,27 @@ exports.deleteCycle = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+exports.rentCycle = async (req, res) => {
+  try {
+    const { id } = req.params; // Cycle ID from the request params
+
+    // Find the cycle by ID and ensure it's available
+    const cycle = await Cycle.findById(id);
+    if (!cycle) {
+      return res.status(404).json({ error: 'Cycle not found' });
+    }
+
+    if (cycle.status !== 'Available') {
+      return res.status(400).json({ error: 'Cycle is not available for rent' });
+    }
+
+    // Update the cycle status to "Rented"
+    cycle.status = 'Rented';
+    await cycle.save();
+
+    res.status(200).json({ message: 'Cycle rented successfully', cycle });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Something went wrong' });
+  }
+};

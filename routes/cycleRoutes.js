@@ -11,5 +11,5 @@ router.get('/', cycleController.getAllCycles);
 router.get('/:id', cycleController.getCycleById);                       
 router.put('/:id',authMiddleware, verifyAdmin, cycleController.updateCycle);         //  Admin only
 router.delete('/:id',authMiddleware, verifyAdmin, cycleController.deleteCycle);          // Admin only
-
+router.put('/rent/:id', authMiddleware, cycleController.rentCycle);
 module.exports = router;
